@@ -18,4 +18,8 @@
   <slot></slot>
 </template>
 
-<style></style>
+<style>
+body {
+  background-color: #14919b;
+}
+</style>

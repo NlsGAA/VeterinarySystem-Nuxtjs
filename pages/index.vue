@@ -1,6 +1,4 @@
-<script>
-definePageMeta({ middleware: ["auth"] });
-</script>
+<script></script>
 
 <template>
   <div>home page</div>
