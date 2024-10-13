@@ -4,7 +4,7 @@ definePageMeta({ layout: "default" });
 const username = ref(null);
 
 onMounted(() => {
-  username.value = useCookie("username");
+  username.value = useCookie("User");
 })
 
 
@@ -36,7 +36,5 @@ onMounted(() => {
 </template>
 
 <style>
-body {
-  background-color: #fff;
-}
+
 </style>

@@ -1,12 +1,26 @@
 export const useAuthStore = defineStore('auth', () => {
 
     const user = ref <object|null> (null);
-    const isAuth = ref(false);
+    const authToken = ref (null);
+    const isAuth = computed(() => !!user.value);
+
+    async function fetchUser(cookie = useCookie("XSRF-TOKEN")) {
+        const response = await useFetch("http://localhost:8000/api/user", {
+            credentials: "include",
+            headers: {
+                accept: "application/json",
+                "Content-Type": "application/json",
+                "X-XSRF-TOKEN": cookie.value as string,
+                "authorization": "Bearer " + authToken.value
+            }
+        });
+
+        user.value = response.data.value.user;
+
+        document.cookie = "User=" + user.value?.name;
+    }
 
     async function login(form: any) {
-
-        console.log(form.value);
-
         await useFetch("http://localhost:8000/sanctum/csrf-cookie", {
             credentials: "include",
           });
@@ -25,15 +39,14 @@ export const useAuthStore = defineStore('auth', () => {
             }
         });
 
-        const userData = response.data.value?.data.user;
+        authToken.value = response.data.value?.data.token;
 
-        if (userData != null || userData != undefined) {
-            user.value = userData;
-            isAuth.value = true;
-        }
+        await fetchUser();
+
+        document.cookie = "JWT-TOKEN=" + authToken.value;
 
         return response;
     }
 
-    return {login, user, isAuth};
+    return {login, user, isAuth, fetchUser, authToken};
 })

@@ -1,5 +1,6 @@
 <script setup>
 import { useAuthStore } from '~/stores/useAuthStore';
+
 definePageMeta({ layout: "guest" });
 
 const form = ref({
@@ -9,36 +10,11 @@ const form = ref({
 
 const handleLogin = async () => {
 
-
   await useAuthStore().login(form);
 
-  console.log(useAuthStore().user);
-  // await useFetch("http://localhost:8000/sanctum/csrf-cookie", {
-  //   credentials: "include",
-  // });
-
-  // const cookie = useCookie("XSRF-TOKEN");
-
-  // const loginData = await useFetch("http://localhost:8000/api/login", {
-  //   method: "POST",
-  //   body: form.value,
-  //   credentials: "include",
-  //   watch: false,
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-Type": "application/json",
-  //     "X-XSRF-TOKEN": cookie.value,
-  //   },
-  // });
-
-  // var responseData = loginData.data.value.data;
-
-  // document.cookie = `username=${responseData.username}; Secure; SameSite=Strict`;
-  // document.cookie = `authToken=${responseData.token}; Secure; SameSite=Strict`;
-
-  // if (useCookie("authToken")) {
-  //   return navigateTo("/");
-  // }
+  if (useAuthStore().isAuth) {
+    return navigateTo("/");
+  }
 };
 </script>
 

@@ -1,10 +1,11 @@
 <script setup>
-definePageMeta({middleware: "auth", layout: "default"});
+definePageMeta({layout: "default"});
 
 const patientsPayload = ref(null);
 
 function getPatients() {
   const cookie = useCookie("XSRF-TOKEN");
+  const authToken = useCookie("JWT-TOKEN");
   
   return useFetch(
     "http://localhost:8000/api/patients/dashboard",
@@ -14,7 +15,7 @@ function getPatients() {
       watch: false,
       headers: {
         Accept: "application/json",
-        Authorization: "Bearer " + useCookie("authToken").value,
+        Authorization: "Bearer " + authToken.value,
         "Content-Type": "application/json",
         "X-XSRF-TOKEN": cookie.value,
       },
@@ -22,11 +23,18 @@ function getPatients() {
   );
 }
 
-onMounted( () => {
-  var patients =  getPatients();
-  console.log(patients);
-  // patientsPayload.value = patients.data.value?.pacientes;
-})
+onMounted(async () => {
+  try {
+    var response =  await getPatients();
+    const patientsData = response.data.value
+    if(patientsData) {
+      patientsPayload.value = patientsData.pacientes || [];
+    }
+  } catch (error) {
+    console.error("Erro ao buscar pacientes!", error)
+    patientsPayload.value = [];
+  }
+});
 
 
 </script>
