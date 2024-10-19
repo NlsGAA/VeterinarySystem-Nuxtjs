@@ -1,5 +1,5 @@
 <script setup>
-import { useAuthStore } from '~/stores/useAuthStore';
+import { useAuthStore } from "~/stores/useAuthStore";
 
 definePageMeta({ layout: "guest" });
 
@@ -103,4 +103,11 @@ const handleLogin = async () => {
   </div>
 </template>
 
-<style></style>
+<style>
+
+body {
+  background: linear-gradient(90deg, #4caf50, #009688);
+  height: 100%;
+}
+
+</style>

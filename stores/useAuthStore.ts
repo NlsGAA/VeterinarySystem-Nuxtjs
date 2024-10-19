@@ -1,8 +1,11 @@
+interface User {
+    name: string
+}
+
 export const useAuthStore = defineStore('auth', () => {
 
-    const user = ref <object|null> (null);
+    const user = ref <User | null> (null);
     const authToken = ref (null);
-    const isAuth = computed(() => !!user.value);
 
     async function fetchUser(cookie = useCookie("XSRF-TOKEN")) {
         const response = await useFetch("http://localhost:8000/api/user", {
@@ -23,7 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function login(form: any) {
         await useFetch("http://localhost:8000/sanctum/csrf-cookie", {
             credentials: "include",
-          });
+        });
         
         const cookie = useCookie("XSRF-TOKEN") ;
     
@@ -48,5 +51,5 @@ export const useAuthStore = defineStore('auth', () => {
         return response;
     }
 
-    return {login, user, isAuth, fetchUser, authToken};
+    return {login, user, fetchUser, authToken};
 })

@@ -81,4 +81,11 @@ const handleRegister = async () => {
   </div>
 </template>
 
-<style></style>
+<style>
+
+body {
+  background: linear-gradient(90deg, #4caf50, #009688);
+  height: 100%;
+}
+
+</style>

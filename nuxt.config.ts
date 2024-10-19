@@ -5,6 +5,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: ["bootstrap/dist/css/bootstrap.min.css"],
-  plugins: [{ src: "~/plugins/bootstrap.js", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/bootstrap.js", mode: "client" },
+    "~/plugins/font-awesome.js",
+    { src: "~/plugins/jquery", mode: "client" },
+  ],
   modules: ["@pinia/nuxt"],
 });
