@@ -17,11 +17,11 @@ onMounted(() => {
 </ul> -->
 
 <template>
-  <div class="container-fluid" style=" border-bottom: 1px solid #fff;">
+  <div class="col-md-12" style=" border-bottom: 1px solid #fff;">
     <nav class="d-flex align-items-center justify-content-around container p-1">
       <div class="">
-        <div class="">
-          <b>teste</b>
+        <div class="fs-4">
+          <font-awesome-icon icon="fa-solid fa-bars" style="cursor: pointer;"/>
         </div>
       </div>
       <div class="w-50">

@@ -5,11 +5,12 @@ definePageMeta({layout: "default"});
 
 const patientsPayload = ref(null);
 const showModal = ref(false);
+const showWarningModal = ref(false);
+const currentToast = ref(null);
+const csrfToken = useCookie("XSRF-TOKEN");
+const bearerToken = useCookie("JWT-TOKEN");
 
 function getPatients() {
-  const cookie = useCookie("XSRF-TOKEN");
-  const authToken = useCookie("JWT-TOKEN");
-  
   return useFetch(
     "http://localhost:8000/api/patients/dashboard",
     {
@@ -18,9 +19,9 @@ function getPatients() {
       watch: false,
       headers: {
         Accept: "application/json",
-        Authorization: "Bearer " + authToken.value,
+        Authorization: "Bearer " + bearerToken.value,
         "Content-Type": "application/json",
-        "X-XSRF-TOKEN": cookie.value,
+        "X-XSRF-TOKEN": csrfToken.value,
       },
     }
   );
@@ -32,6 +33,30 @@ function selectAllCheckboxes() {
 
 function filterPatients() {
   console.log('está filtrando');
+}
+
+async function destroy(endpoint) {
+    const response = await useFetch("http://localhost:8000/api/" + endpoint, {
+        method: "GET",
+        credentials: "include",
+        watch: false,
+        headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            "X-XSRF-TOKEN": csrfToken.value,
+            Authorization: "Bearer " + bearerToken.value
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    const { message, status } = response.data.value;
+
+    if(status == 200) {
+        window.location.reload();
+        this.currentToast = message, 'success';
+        setTimeout(() => {this.currentToast = null;}, 3000);
+    }
 }
 
 onMounted(async () => {
@@ -51,7 +76,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="modal">teste</div>
+  <Toast :isVisible="true" />
 
   <div class="mb-3">
     <span class="fs-1 fw-bold">Pacientes:</span>
@@ -105,15 +130,22 @@ onMounted(async () => {
             <td>ainda n tem</td>
             <td>{{patient.owner_id}}</td>
             <td>
-              <ActionButtons
-                :id="patient.id"
-                :endpoint="`patients/delete/${patient.id}`"
-              />
+              <div class="">
+                  <button type="button" class="btn btn-outline-primary">Editar</button>
+                  <button type="button" @click="showWarningModal = true" class="btn btn-outline-danger ms-2">Deletar</button>
+              </div>
             </td>
+            <WarningModal
+              :isVisible="showWarningModal"
+              @close="showWarningModal = false"
+              @confirmed="destroy(`patients/delete/${patient.id}`)"
+            />
           </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- @click="destroy(`patients/delete/${patient.id}`)" -->
 
 </template>
 

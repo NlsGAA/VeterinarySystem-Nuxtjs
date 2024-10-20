@@ -12,7 +12,7 @@ const handleLogin = async () => {
 
   await useAuthStore().login(form);
 
-  if (useAuthStore().isAuth) {
+  if (useAuthStore().authToken) {
     return navigateTo("/");
   }
 };

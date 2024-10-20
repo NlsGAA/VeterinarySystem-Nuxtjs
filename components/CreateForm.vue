@@ -2,7 +2,7 @@
     <div v-if="isVisible" class="modal-overlay">
         <div class="modal-content">
             <div class="d-flex justify-content-end fs-4">
-                <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto" @click="$emit('close')" />
+                <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="$emit('close')" />
             </div>
             <span class="fs-2 fw-bold mb-2">Cadastrar paciente:</span>
             <form @submit.prevent="handlePatientRegister" method="POST" enctype="multipart/form-data">
@@ -10,7 +10,7 @@
                     <div class="row mb-2">
                         <div class="col-md-5">
                             <label for="image" class="form-label fw-bold fw-bold">Imagem:</label>
-                            <input type="file" class="form-control-file" id="image" name="image[]" multiple>
+                            <input type="file" class="form-control-file" id="image" name="image[]" @change="handleImageFiles" multiple>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -85,7 +85,7 @@
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <label for="motivoCadastro" class="form-label fw-bold">Motivo do cadastro:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="motivoCadastro" id="motivoCadastro" v-on:change="internamento()" v-model="form.reason" required>
+                            <select class="form-select" name="motivoCadastro" id="motivoCadastro" @change="handleHospitalizedInput()" v-model="form.reason" required>
                                 <option value="1" selected>Serviços gerais</option>
                                 <option value="2">Internamento</option>
                                 <option value="3">Consulta</option>
@@ -94,11 +94,11 @@
                     </div>
 
                     <div class="row mb-2">
-                        <div style="display: none" id="internamentoSituacao" >
+                        <div v-if="showHospitalizedInput" id="internamentoSituacao" >
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <label for="situacaoInternacao" class="form-label fw-bold">Situação:<span class="text-danger">*</span></label>
-                                    <select class="form-select" name="situacaoInternacao" id="situacaoInternacao" v-model="form.situation" required>
+                                    <select class="form-select" name="situacaoInternacao" id="situacaoInternacao" v-model="form.situation" v-bind:required="showHospitalizedInput">
                                         <option value="1" selected>Urgência</option>
                                         <option value="2">Clínica</option>
                                         <option value="3">Cirúgico</option>
@@ -111,7 +111,7 @@
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Dr(a) responsável:<span class="text-danger">*</span></label>
-                                    <select class="form-select" name="drResponsavel" id="drResponsavel" v-model="form.doctor" required>
+                                    <select class="form-select" name="drResponsavel" id="drResponsavel" v-model="form.doctor" v-bind:required="showHospitalizedInput">
                                         <option v-for="doctor in doctorsData" :key="doctor.id" :value="doctor.id">{{ doctor.name }}</option>
                                     </select>
                                 </div>
@@ -130,19 +130,14 @@
     </div>
 </template>
 
-<script>
-function internamento(){
-    if($('#motivoCadastro').val() == 2){
-        $('#internamentoSituacao').show();
-    }else{
-        $('#internamentoSituacao').hide();
-    }
-}
-</script>
-
 <script setup>
 let csrfToken = useCookie("XSRF-TOKEN");
 const bearerToken = useCookie("JWT-TOKEN");
+
+const form = ref({});
+const ownersData = ref([]);
+const doctorsData = ref([]);
+const showHospitalizedInput = ref(false);
 
 const props = defineProps({
     isVisible: {
@@ -151,9 +146,21 @@ const props = defineProps({
     },
 })
 
-const doctorsData = ref([]);
-const ownersData = ref([]);
-const form = ref({});
+function handleHospitalizedInput() {
+    showHospitalizedInput.value = false;
+    if (this.form.reason == 2) {
+        showHospitalizedInput.value = true;
+    };
+}
+
+function handleImageFiles(event) {
+    const files = event.target.files;
+    const imagesData = Array.from(files);
+    imagesData.forEach((image) => {
+        form.value.images = image;
+    })
+    console.log(form.value.images);
+}
 
 const handlePatientRegister = async () => {
     const response = await useFetch("http://localhost:8000/api/patients/create", {
@@ -163,7 +170,6 @@ const handlePatientRegister = async () => {
         body: form.value,
         headers: {
             accept: "application/json",
-            "Content-Type": "application/json",
             "X-XSRF-TOKEN": csrfToken.value,
             Authorization: "Bearer " + bearerToken.value
         }
@@ -176,6 +182,7 @@ const handlePatientRegister = async () => {
     alert(message);
     window.location.reload();
 }
+
 
 async function fetchDrs() {
     const response = await useFetch("http://localhost:8000/api/doctors", {
@@ -217,6 +224,7 @@ onMounted(async () => {
 </script>
 
 <style>
+
 .modal-overlay {
     position: fixed;
     z-index: 1000;
@@ -238,4 +246,9 @@ onMounted(async () => {
     width: 90%;
     max-width: 1000px;
 }
+
+.close-modal-icon {
+    cursor: pointer;
+}
+
 </style>
