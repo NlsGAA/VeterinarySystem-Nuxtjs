@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-end fs-4">
                 <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="$emit('close')" />
             </div>
-            <span class="fs-2 fw-bold mb-2">Cadastrar paciente:</span>
+            <span class="fs-2 fw-bold mb-2">Edtiar paciente:</span>
             <form @submit.prevent="handlePatientRegister" method="POST" enctype="multipart/form-data">
                 <div class="row p-3 w-100">
                     <div class="row mb-2">
@@ -37,11 +37,17 @@
                             <input type="text" class="form-control" placeholder="Peso" name="peso" id="peso" v-model="form.weight" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Tipo de Peso:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="tipoPeso" id="tipoPeso" v-model="form.weightType" required>
-                                <option value="0">Kilos</option>
-                                <option value="1">Gramas</option>
-                            </select>
+                            <label for="peso" class="form-label fw-bold">Tipo peso:<span class="text-danger">*</span></label>
+                            <div class="col-md-6 d-flex">
+                                <div class="me-2">
+                                    <input type="radio" class="me-1" id="kilos" value="0" v-model="form.weightType" checked required>
+                                    <label for="kilos">Kilos</label>
+                                </div>
+                                <div class="ms-2">
+                                    <input type="radio" class="me-1" id="gramas" value="1" v-model="form.weightType" required>
+                                    <label for="gramas">Gramas</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -67,11 +73,17 @@
                             <input type="text" class="form-control" placeholder="Idade" name="idade" id="idade" v-model="form.age" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Tipo de Idade:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="tipoIdade" id="tipoIdade" v-model="form.ageType" required>
-                                <option value="0">Anos</option>
-                                <option value="1">Meses</option>
-                            </select>
+                            <label for="peso" class="form-label fw-bold">Tipo peso:<span class="text-danger">*</span></label>
+                            <div class="col-md-6 d-flex">
+                                <div class="me-2">
+                                    <input type="radio" class="me-1" id="anos" value="0" v-model="form.ageType" checked required>
+                                    <label for="anos">Anos</label>
+                                </div>
+                                <div class="ms-2">
+                                    <input type="radio" class="me-1" id="meses" value="1" v-model="form.ageType" required>
+                                    <label for="meses">Meses</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -121,7 +133,7 @@
 
                     <div class="row mb-2">
                         <div class="col-md-12">
-                            <input class="btn btn-success" type="submit" value="Registrar">
+                            <input class="btn btn-success" type="submit" value="Editar">
                         </div>
                     </div>
                 </div>
@@ -144,6 +156,11 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    patientId: {
+        type: Number,
+        required: true,
+        default: null
+    }
 })
 
 function handleHospitalizedInput() {
@@ -162,8 +179,25 @@ function handleImageFiles(event) {
     console.log(form.value.images);
 }
 
+const handlePatientData = async () => {
+    const response = await useFetch("http://localhost:8000/api/patients/findPatient/" + props.patientId, {
+        method: "GET",
+        credentials: "include",
+        watch: false,
+        headers: {
+            accept: "application/json",
+            "X-XSRF-TOKEN": csrfToken.value,
+            Authorization: "Bearer " + bearerToken.value
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    return response.data.value.paciente;
+}
+
 const handlePatientRegister = async () => {
-    const response = await useFetch("http://localhost:8000/api/patients/create", {
+    const response = await useFetch("http://localhost:8000/api/patients/update", {
         method: "POST",
         credentials: "include",
         watch: false,
@@ -217,6 +251,7 @@ async function fetchOwnersData() {
 }
 
 onMounted(async () => {
+    form.value = await handlePatientData();
     doctorsData.value = await fetchDrs();
     ownersData.value = await fetchOwnersData();
 });

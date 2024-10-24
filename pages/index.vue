@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 definePageMeta({layout: "default"});
 
+const patientId = ref(null);
 const patientsPayload = ref(null);
 const showModal = ref(false);
 const showWarningModal = ref(false);
-const currentToast = ref(null);
+const showEditPatientModal = ref(false);
 const csrfToken = useCookie("XSRF-TOKEN");
 const bearerToken = useCookie("JWT-TOKEN");
 
@@ -33,6 +34,11 @@ function selectAllCheckboxes() {
 
 function filterPatients() {
   console.log('está filtrando');
+}
+
+function openEditPatientModal(patientId) {
+  this.patientId = patientId;
+  this.showEditPatientModal = true;
 }
 
 async function destroy(endpoint) {
@@ -76,7 +82,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast :isVisible="true" />
 
   <div class="mb-3">
     <span class="fs-1 fw-bold">Pacientes:</span>
@@ -100,7 +105,7 @@ onMounted(async () => {
         </button>
       </div>
 
-      <CreateForm
+      <CreatePatientForm
         :isVisible="showModal"
         @close="showModal = false" 
       />
@@ -122,31 +127,36 @@ onMounted(async () => {
       </thead>
       <tbody>
         <tr v-for="patient in patientsPayload" :key="patient.id">
-            <td><input type="checkbox" :key="patient.id"/></td>
-            <td>{{patient.id}}</td>
-            <td>{{patient.nome}}</td>
-            <td>{{patient.especie}}</td>
-            <td>{{patient.raca}}</td>
-            <td>ainda n tem</td>
-            <td>{{patient.owner_id}}</td>
-            <td>
-              <div class="">
-                  <button type="button" class="btn btn-outline-primary">Editar</button>
-                  <button type="button" @click="showWarningModal = true" class="btn btn-outline-danger ms-2">Deletar</button>
-              </div>
-            </td>
-            <WarningModal
-              :isVisible="showWarningModal"
-              @close="showWarningModal = false"
-              @confirmed="destroy(`patients/delete/${patient.id}`)"
-            />
-          </tr>
+          <td><input type="checkbox" :key="patient.id"/></td>
+          <td>{{patient.id}}</td>
+          <td>{{patient.name}}</td>
+          <td>{{patient.species}}</td>
+          <td>{{patient.breed}}</td>
+          <td>ainda n tem</td>
+          <td>{{patient.owner_id}}</td>
+          <td>
+            <div class="">
+                <button type="button" @click="openEditPatientModal(patient.id)" class="btn btn-outline-primary">Editar</button>
+                <button type="button" @click="showWarningModal = true" class="btn btn-outline-danger ms-2">Deletar</button>
+            </div>
+          </td>
+
+          <WarningModal v-if="showWarningModal"
+            :isVisible="showWarningModal"
+            @close="showWarningModal = false"
+            @confirmed="destroy(`patients/delete/${patient.id}`)"
+          />
+
+        </tr>
       </tbody>
     </table>
   </div>
-
-  <!-- @click="destroy(`patients/delete/${patient.id}`)" -->
-
+  
+  <EditPatientForm v-if="showEditPatientModal"
+    :isVisible="showEditPatientModal"
+    :patientId="patientId"
+    @close="showEditPatientModal = false"
+  />
 </template>
 
 <style>

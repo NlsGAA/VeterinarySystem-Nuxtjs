@@ -3,25 +3,22 @@ definePageMeta({ layout: "default" });
 
 const username = ref(null);
 
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('show');
+}
+
 onMounted(() => {
   username.value = useCookie("User");
 })
 </script>
 
-<!-- <ul class="list-unstyled d-flex flex-row mt-3 mx-auto">
-  <li class="mx-2"><a href="/" class="text-decoration-none text-black fs-6 m-3">Home</a></li>
-  <li class="mx-2"><a href="/" class="text-decoration-none text-black fs-6 m-3">Dashboard</a></li>
-  <li class="mx-2"><a href="/" class="text-decoration-none text-black fs-6 m-3">Registrar paciente</a></li>
-  <li class="mx-2"><a href="/" class="text-decoration-none text-black fs-6 m-3">Pacientes internados</a></li>
-  <li class="mx-2"><a href="/" class="text-decoration-none text-black fs-6 m-3">Cadastrar donos</a></li>
-</ul> -->
-
 <template>
   <div class="col-md-12" style=" border-bottom: 1px solid #fff;">
     <nav class="d-flex align-items-center justify-content-around container p-1">
       <div class="">
-        <div class="fs-4">
-          <font-awesome-icon icon="fa-solid fa-bars" style="cursor: pointer;"/>
+        <div class="fs-4 menu-icon">
+          <font-awesome-icon icon="fa-solid fa-bars" @click="toggleMenu" style="cursor: pointer;"/>
         </div>
       </div>
       <div class="w-50">
@@ -46,10 +43,54 @@ onMounted(() => {
       <slot />
     </div>
   </div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="d-flex flex-column">
+      <ul>
+        <li class="mx-2"><a href="/" class="text-decoration-none fs-6 m-3">Home</a></li>
+        <hr />
+        <li class="mx-2"><a href="/" class="text-decoration-none fs-6 m-3">Dashboard</a></li>
+        <li class="mx-2"><a href="/patient-register" class="text-decoration-none fs-6 m-3">Registrar paciente</a></li>
+        <li class="mx-2"><a href="/hospitalized-patients" class="text-decoration-none fs-6 m-3">Pacientes internados</a></li>
+        <li class="mx-2"><a href="/create-new-owner" class="text-decoration-none fs-6 m-3">Cadastrar donos</a></li>
+      </ul>
+    </div>
+  </div>
+
 </template>
 
 <style>
   .templateSlot {
     margin-top: 60px;
   }
+
+  .sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    transition: left 0.3s ease;
+    padding-top: 60px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar.show {
+    left: 0;
+}
 </style>
