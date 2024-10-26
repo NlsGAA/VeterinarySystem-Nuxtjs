@@ -60,7 +60,7 @@
                                         {{ owner.firstName }} {{ owner.lastName }}
                                     </option>
                                 </select>
-                                <button class="btn btn-success w-25">
+                                <button class="btn btn-success w-25" type="button">
                                     <font-awesome-icon icon="fa-solid fa-plus-circle" />
                                     Novo responsável
                                 </button>
@@ -151,6 +151,8 @@
 </template>
 
 <script setup>
+import { showToast } from '~~/utilities/toast';
+
 let csrfToken = useCookie("XSRF-TOKEN");
 const bearerToken = useCookie("JWT-TOKEN");
 
@@ -186,7 +188,7 @@ function handleImageFiles(event) {
     });
 }
 
-const handlePatientRegister = async () => {
+async function handlePatientRegister() {
 
     formData.append('name', form.value.name);
     formData.append('age', form.value.age);
@@ -219,8 +221,8 @@ const handlePatientRegister = async () => {
 
     const { message, patient, status } = response.data.value;
 
-    // alert(message);
-    // window.location.reload();
+    showToast({ message, status });
+    this.form.value = {};
 }
 
 

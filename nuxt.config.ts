@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     { src: "~/plugins/bootstrap.js", mode: "client" },
     "~/plugins/font-awesome.js",
     { src: "~/plugins/jquery", mode: "client" },
+    "~/plugins/toast.js",
   ],
   modules: ["@pinia/nuxt"],
 });

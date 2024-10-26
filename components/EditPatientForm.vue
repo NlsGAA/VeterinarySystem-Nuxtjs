@@ -54,9 +54,17 @@
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Responsável:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="patientOwner" id="patientOwner" v-model="form.owner" required>
-                                <option v-for="owner in ownersData" :key="owner.id" :value="owner.id">{{ owner.firstName }} {{ owner.lastName }}</option>
-                            </select>
+                            <div class="d-flex align-items-center">
+                                <select class="form-select me-4" name="patientOwner" id="patientOwner" v-model="form.owner" required>
+                                    <option v-for="owner in ownersData" :key="owner.id" :value="owner.id">
+                                        {{ owner.firstName }} {{ owner.lastName }}]
+                                    </option>
+                                </select>
+                                <button class="btn btn-success w-25" type="button">
+                                    <font-awesome-icon icon="fa-solid fa-plus-circle" />
+                                    Novo responsável
+                                </button>
+                            </div>
                         </div>
                     </div>
 

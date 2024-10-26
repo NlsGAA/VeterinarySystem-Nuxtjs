@@ -1,5 +1,6 @@
 <script setup>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { showToast } from '~/utilities/toast';
 
 definePageMeta({layout: "default"});
 
@@ -55,14 +56,19 @@ async function destroy(endpoint) {
     }).catch((error) => {
         console.log(error);
     });
+    this.patientId = null;
 
     const { message, status } = response.data.value;
 
     if(status == 200) {
-        window.location.reload();
-        this.currentToast = message, 'success';
-        setTimeout(() => {this.currentToast = null;}, 3000);
+      showWarningModal.value = false;
+      showToast({message, status: 'success'});
     }
+}
+
+function openWarningModal(patientId){
+  this.patientId = patientId;
+  showWarningModal.value = true;
 }
 
 onMounted(async () => {
@@ -137,16 +143,9 @@ onMounted(async () => {
           <td>
             <div class="">
                 <button type="button" @click="openEditPatientModal(patient.id)" class="btn btn-outline-primary">Editar</button>
-                <button type="button" @click="showWarningModal = true" class="btn btn-outline-danger ms-2">Deletar</button>
+                <button type="button" @click="openWarningModal(patient.id)" class="btn btn-outline-danger ms-2">Deletar</button>
             </div>
           </td>
-
-          <WarningModal v-if="showWarningModal"
-            :isVisible="showWarningModal"
-            @close="showWarningModal = false"
-            @confirmed="destroy(`patients/delete/${patient.id}`)"
-          />
-
         </tr>
       </tbody>
     </table>
@@ -156,6 +155,12 @@ onMounted(async () => {
     :isVisible="showEditPatientModal"
     :patientId="patientId"
     @close="showEditPatientModal = false"
+  />
+
+  <WarningModal v-if="showWarningModal"
+    :isVisible="showWarningModal"
+    @close="showWarningModal = false"
+    @confirmed="destroy(`patients/delete/${patientId}`)"
   />
 </template>
 

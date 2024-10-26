@@ -26,14 +26,17 @@ onMounted(() => {
           <input type="search" class="form-control w-100 text-center " data-bs-theme="dark" placeholder="Pesquisar" aria-label="Pesquisar" style="outline: none; box-shadow: none; ">
         </div>
       </div>
-      <div class="">
+      <div class="d-flex">
         <img
           class="rounded-circle border border-warning shadow-sm"
           src="https://i.pinimg.com/originals/6d/5f/c6/6d5fc60bae3dc6139eefa31af206596f.jpg"
           alt="profile-image"
           style="width: 50px; height: 50px"
         />
-        <span class="fw-bold ms-2">{{ username }}</span>
+        <div class="d-flex flex-column">
+          <span class="fw-bold ms-2">{{ username }}</span>
+          <span class="ms-2">Desenvolvedor</span>
+        </div>
       </div>
     </nav>
   </div>
@@ -47,7 +50,12 @@ onMounted(() => {
   <div class="sidebar" id="sidebar">
     <div class="d-flex flex-column">
       <ul>
-        <li class="mx-2"><a href="/" class="text-decoration-none fs-6 m-3">Home</a></li>
+        <li class="mx-2">
+          <a href="/" class="text-decoration-none fs-6 m-3">
+            <font-awesome-icon icon="fa-solid fa-house" class="me-2"/>
+            Home
+          </a>
+        </li>
         <hr />
         <li class="mx-2"><a href="/" class="text-decoration-none fs-6 m-3">Dashboard</a></li>
         <li class="mx-2"><a href="/patient-register" class="text-decoration-none fs-6 m-3">Registrar paciente</a></li>
