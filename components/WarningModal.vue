@@ -2,7 +2,7 @@
     <div v-if="isVisible" class="modal-overlay">
         <div class="warning-modal-content">
             <div class="d-flex justify-content-end fs-4">
-                <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto" @click="$emit('close')" />
+                <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="$emit('close')" />
             </div>
             <div class="d-flex justify-content-center row text-center">
                 <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="text-warning pe-auto warning-icon mb-2" />
@@ -60,5 +60,9 @@ const props = defineProps({
 
 .warning-icon {
     font-size: 100px;
+}
+
+.close-modal-icon {
+    cursor: pointer;
 }
 </style>

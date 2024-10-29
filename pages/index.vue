@@ -144,6 +144,7 @@ onMounted(async () => {
             <div class="">
                 <button type="button" @click="openEditPatientModal(patient.id)" class="btn btn-outline-primary">Editar</button>
                 <button type="button" @click="openWarningModal(patient.id)" class="btn btn-outline-danger ms-2">Deletar</button>
+                <button type="button" @click="navigateTo(`/view-patient/${patient.id}`)" class="btn btn-outline-info ms-2">Visualizar</button>
             </div>
           </td>
         </tr>
