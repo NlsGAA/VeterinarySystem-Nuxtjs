@@ -153,9 +153,6 @@
 <script setup>
 import { showToast } from '~~/utilities/toast';
 
-let csrfToken = useCookie("XSRF-TOKEN");
-const bearerToken = useCookie("JWT-TOKEN");
-
 const form = ref({});
 const formData = new FormData();
 const ownersData = ref([]);
@@ -205,20 +202,7 @@ async function handlePatientRegister() {
     formData.append('species', form.value.species);
 
 
-    const response = await useFetch("http://localhost:8000/api/patients/create", {
-        method: "POST",
-        credentials: "include",
-        watch: false,
-        body: formData,
-        headers: {
-            accept: "application/json",
-            "X-XSRF-TOKEN": csrfToken.value,
-            Authorization: "Bearer " + bearerToken.value
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
-
+    const response = await useApi("patients/create", {method: "POST", body: formData});
     const { message, patient, status } = response.data.value;
 
     showToast({ message, status });
@@ -227,34 +211,12 @@ async function handlePatientRegister() {
 
 
 async function fetchDrs() {
-    const response = await useFetch("http://localhost:8000/api/doctors", {
-        method: "GET",
-        credentials: "include",
-        watch: false,
-        headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            "X-XSRF-TOKEN": csrfToken.value,
-            Authorization: "Bearer " + bearerToken.value
-        }
-    });
-
+    const response = await useApi("doctors");
     return response.data.value.doutores;
 }
 
 async function fetchOwnersData() {
-    const response = await useFetch("http://localhost:8000/api/owners", {
-        method: "GET",
-        credentials: "include",
-        watch: false,
-        headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            "X-XSRF-TOKEN": csrfToken.value,
-            Authorization: "Bearer " + bearerToken.value
-        }
-    });
-
+    const response = await useApi("owners");
     return response.data.value;
 }
 
@@ -278,6 +240,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
 }
 
 .modal-content {

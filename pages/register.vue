@@ -8,21 +8,7 @@ const userData = ref({
 });
 
 const handleRegister = async () => {
-  await useFetch("http://localhost:8000/sanctum/csrf-cookie", {
-    credentials: "include",
-  });
-  const cookie = useCookie("XSRF-TOKEN");
-  const registerData = await useFetch("http://localhost:8000/api/register", {
-    method: "POST",
-    body: userData.value,
-    credentials: "include",
-    watch: false,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-XSRF-TOKEN": cookie.value,
-    },
-  });
+  const registerData = await useApi("register", { method: "POST", body: userData.value });
 
   if (registerData.data.value.status == 200) {
     return navigateTo("/login");
@@ -87,5 +73,4 @@ body {
   background: linear-gradient(90deg, #4caf50, #009688);
   height: 100%;
 }
-
 </style>

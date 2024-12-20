@@ -1,193 +1,126 @@
 <script setup>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { showToast } from '~/utilities/toast';
+import { login, authToken } from "~/stores/useAuthStore";
 
-definePageMeta({layout: "default"});
+definePageMeta({ layout: "guest" });
 
-const patientId = ref(null);
-const patientsPayload = ref(null);
-const showModal = ref(false);
-const showWarningModal = ref(false);
-const showEditPatientModal = ref(false);
-const csrfToken = useCookie("XSRF-TOKEN");
-const bearerToken = useCookie("JWT-TOKEN");
-
-function getPatients() {
-  return useFetch(
-    "http://localhost:8000/api/patients/dashboard",
-    {
-      method: "GET",
-      credentials: "include",
-      watch: false,
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + bearerToken.value,
-        "Content-Type": "application/json",
-        "X-XSRF-TOKEN": csrfToken.value,
-      },
-    }
-  );
-}
-
-function selectAllCheckboxes() {
-  console.log('entrou');
-}
-
-function filterPatients() {
-  console.log('está filtrando');
-}
-
-function openEditPatientModal(patientId) {
-  this.patientId = patientId;
-  this.showEditPatientModal = true;
-}
-
-async function destroy(endpoint) {
-    const response = await useFetch("http://localhost:8000/api/" + endpoint, {
-        method: "GET",
-        credentials: "include",
-        watch: false,
-        headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            "X-XSRF-TOKEN": csrfToken.value,
-            Authorization: "Bearer " + bearerToken.value
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
-    this.patientId = null;
-
-    const { message, status } = response.data.value;
-
-    if(status == 200) {
-      showWarningModal.value = false;
-      showToast({message, status: 'success'});
-    }
-}
-
-function openWarningModal(patientId){
-  this.patientId = patientId;
-  showWarningModal.value = true;
-}
-
-onMounted(async () => {
-  try {
-    var response =  await getPatients();
-    const patientsData = response.data.value
-
-    if(patientsData) {
-      patientsPayload.value = patientsData.pacientes || [];
-    }
-  } catch (error) {
-    console.error("Erro ao buscar pacientes!", error)
-    patientsPayload.value = [];
-  }
+const form = ref({
+  email: "",
+  password: "",
 });
 
+const response = ref({});
+const errors = ref(null);
+
+const handleLogin = async () => {
+
+  response.value = await login(form);
+
+  var errorMessage = '';
+  if(errorMessage = response.value.error?.data.message) {
+    errors.value = errorMessage;
+  }
+
+  console.log(authToken.value != undefined);
+
+  if (authToken.value != undefined) {
+    return navigateTo("/app/patients");
+  }
+};
 </script>
 
 <template>
-
-  <div class="mb-3">
-    <span class="fs-1 fw-bold">Pacientes:</span>
+  <div class="col-md-4 w-50 p-2 d-flex">
+    <img
+      src="public\img\medicine_b1ol_login_page.png"
+      class="w-100 border-end border-dark pe-none mx-auto"
+    />
   </div>
 
-  <div class="d-flex justify-content-between mb-3 col-md-12">
-      <div class="">
-        <form @submit.prevent="filterPatients" class="d-flex">
-            <input class="form-control me-2 w-auto input-border-disable" type="text" placeholder="Nome do paciente" style="box-shadow: none; outline: none"/>
-            <button class="btn no-wrap .m" type="submit">
-              <font-awesome-icon icon="fa-solid fa-search" />
-              Filtrar resultados
-            </button>
-        </form>
-      </div>
-
-      <div>
-        <button class="btn btn-primary" @click="showModal = true">
-          <font-awesome-icon icon="fa-solid fa-plus-circle" />
-          Novo paciente
-        </button>
-      </div>
-
-      <CreatePatientForm
-        :isVisible="showModal"
-        @close="showModal = false" 
-      />
+  <div class="col-md-4 w-50 p-2 m-2">
+    <div v-if="errors != undefined">
+      <span class="text-danger fw-bold">{{ errors }}</span>
+    </div>
+    <h3>Seja-bem vindo(a) {{ form.email }}!</h3>
+    <div class="p-2 d-flex-inline">
+      <form @submit.prevent="handleLogin">
+        <div class="container-fluid">
+          <label class="fw-bold mb-1">Email:</label>
+          <div class="d-flex ms-6">
+            <span
+              class="input-group-text rounded-start-pill"
+              id="addon-wrapping"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-envelope-at"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2zm3.708 6.208L1 11.105V5.383zM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2z"
+                />
+                <path
+                  d="M14.247 14.269c1.01 0 1.587-.857 1.587-2.025v-.21C15.834 10.43 14.64 9 12.52 9h-.035C10.42 9 9 10.36 9 12.432v.214C9 14.82 10.438 16 12.358 16h.044c.594 0 1.018-.074 1.237-.175v-.73c-.245.11-.673.18-1.18.18h-.044c-1.334 0-2.571-.788-2.571-2.655v-.157c0-1.657 1.058-2.724 2.64-2.724h.04c1.535 0 2.484 1.05 2.484 2.326v.118c0 .975-.324 1.39-.639 1.39-.232 0-.41-.148-.41-.42v-2.19h-.906v.569h-.03c-.084-.298-.368-.63-.954-.63-.778 0-1.259.555-1.259 1.4v.528c0 .892.49 1.434 1.26 1.434.471 0 .896-.227 1.014-.643h.043c.118.42.617.648 1.12.648m-2.453-1.588v-.227c0-.546.227-.791.573-.791.297 0 .572.192.572.708v.367c0 .573-.253.744-.564.744-.354 0-.581-.215-.581-.8Z"
+                /></svg
+            ></span>
+            <input
+              type="text"
+              class="form-control rounded-end-pill"
+              placeholder="Email"
+              aria-label="Email"
+              aria-describedby="addon-wrapping"
+              v-model="form.email"
+              style="box-shadow: none; outline: none"
+            />
+          </div>
+        </div>
+        <div class="container-fluid mt-2 mb-2">
+          <label class="fw-bold mb-1">Password:</label>
+          <div class="input-group flex-nowrap">
+            <span
+              class="input-group-text rounded-start-pill"
+              id="addon-wrapping"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-lock"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2M5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1"
+                /></svg
+            ></span>
+            <input
+              type="password"
+              class="form-control rounded-end-pill disabled"
+              placeholder="*********"
+              aria-label="Email"
+              aria-describedby="addon-wrapping"
+              v-model="form.password"
+              style="box-shadow: none; outline: none"
+            />
+          </div>
+        </div>
+        <span class="fw-bold fs-8">
+          Não possui uma conta?
+          <NuxtLink href="/register" class="link-opacity-50-hover"
+            >Cadastre-se</NuxtLink
+          >
+        </span>
+        <button class="btn btn-success w-50 mt-3" type="submit">Login</button>
+      </form>
+    </div>
   </div>
-
-  <div class="col-md-12 p-3 d-flex-inline body-table-content">
-    <table class="col-md-12">
-      <thead>
-        <tr>
-            <th><input type="checkbox" class="select-all-on-check" @change="selectAllCheckboxes()" /></th>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Espécie</th>
-            <th>Raça</th>
-            <th>Status</th>
-            <th>Dono</th>
-            <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="patient in patientsPayload" :key="patient.id">
-          <td><input type="checkbox" :key="patient.id"/></td>
-          <td>{{patient.id}}</td>
-          <td>{{patient.name}}</td>
-          <td>{{patient.species}}</td>
-          <td>{{patient.breed}}</td>
-          <td>ainda n tem</td>
-          <td>{{patient.owner_id}}</td>
-          <td>
-            <div class="">
-                <button type="button" @click="openEditPatientModal(patient.id)" class="btn btn-outline-primary">Editar</button>
-                <button type="button" @click="openWarningModal(patient.id)" class="btn btn-outline-danger ms-2">Deletar</button>
-                <button type="button" @click="navigateTo(`/view-patient/${patient.id}`)" class="btn btn-outline-info ms-2">Visualizar</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <EditPatientForm v-if="showEditPatientModal"
-    :isVisible="showEditPatientModal"
-    :patientId="patientId"
-    @close="showEditPatientModal = false"
-  />
-
-  <WarningModal v-if="showWarningModal"
-    :isVisible="showWarningModal"
-    @close="showWarningModal = false"
-    @confirmed="destroy(`patients/delete/${patientId}`)"
-  />
 </template>
 
 <style>
 
-.body-table-content {
-  border: 2px solid #f6f6f6;
-  border-radius: 10px;
-}
-
-table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-}
-
-table thead tr {
-  margin-bottom: 50px;
-}
-
-table thead th {
-  color: #a9a9a9;
-}
-
-table tbody td {
-    border-bottom: 2px solid #f6f6f6 !important;
-    color: #000;
+body {
+  background: linear-gradient(90deg, #4caf50, #009688);
+  height: 100%;
 }
 
 </style>

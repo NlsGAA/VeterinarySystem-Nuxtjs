@@ -60,26 +60,10 @@
 </template>
 
 <script setup>
-let csrfToken = useCookie("XSRF-TOKEN");
-const bearerToken = useCookie("JWT-TOKEN");
-
 const form = ref({});
 
 async function handleOwnerRegister() {
-    const response = await useFetch("http://localhost:8000/api/owners/update", {
-        method: "POST",
-        credentials: "include",
-        watch: false,
-        body: form.value,
-        headers: {
-            accept: "application/json",
-            "X-XSRF-TOKEN": csrfToken.value,
-            Authorization: "Bearer " + bearerToken.value
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
-
+    const response = await useApi("owners/update", {method: "POST", body: form.value});
     const { message, owner, status } = response.data.value;
 
     console.log(response.data.value);
