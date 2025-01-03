@@ -82,16 +82,16 @@ onMounted(async () => {
       </div>
 
       <div>
-        <button class="btn btn-primary" @click="showModal = true">
+        <button class="btn btn-primary" @click="showModal = !showModal">
           <font-awesome-icon icon="fa-solid fa-plus-circle" />
           Novo paciente
         </button>
+        <CreatePatientForm
+          :isVisible="showModal"
+          @close="showModal = false" 
+        />
       </div>
 
-      <CreatePatientForm
-        :isVisible="showModal"
-        @close="showModal = false" 
-      />
   </div>
 
   <div class="col-md-12 p-3 d-flex-inline body-table-content">

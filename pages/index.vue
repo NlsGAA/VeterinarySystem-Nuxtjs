@@ -8,23 +8,16 @@ const form = ref({
   password: "",
 });
 
-const response = ref({});
 const errors = ref(null);
 
 const handleLogin = async () => {
 
-  response.value = await login(form);
+  await login(form).then(() => {
+    navigateTo("/app/patients");
+  }).catch((error) => {
+    errors.value = error.message
+  });
 
-  var errorMessage = '';
-  if(errorMessage = response.value.error?.data.message) {
-    errors.value = errorMessage;
-  }
-
-  console.log(authToken.value != undefined);
-
-  if (authToken.value != undefined) {
-    return navigateTo("/app/patients");
-  }
 };
 </script>
 

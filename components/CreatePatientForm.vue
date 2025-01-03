@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isVisible" class="modal-overlay">
+    <div v-if="isVisible" class="modal-overlay" ref="createPatientForm">
         <div class="modal-content">
             <div class="d-flex justify-content-end fs-4">
                 <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="$emit('close')" />
@@ -151,109 +151,105 @@
 </template>
 
 <script setup>
-import { showToast } from '~~/utilities/toast';
+import { ref, onMounted, watch } from 'vue';
+import autoAnimate from '@formkit/auto-animate';
 
 const form = ref({});
-const formData = new FormData();
 const ownersData = ref([]);
 const doctorsData = ref([]);
 const showHospitalizedInput = ref(false);
+const createPatientForm = ref(null);
 
 const props = defineProps({
-    isVisible: {
-        type: Boolean,
-        default: false
-    },
-})
+  isVisible: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-function handleHospitalizedInput() {
-    showHospitalizedInput.value = false;
-    if (this.form.reason == 2) {
-        showHospitalizedInput.value = true;
-    };
-}
+// Função que deve ser chamada ao alterar a visibilidade do modal
+watch(() => props.isVisible, (newVal) => {
+  if (newVal && createPatientForm.value) {
+    // Aplica animação quando a modal fica visível
+    autoAnimate(createPatientForm.value);
+  }
+});
 
-function handleImageFiles(event) {
-    const { files } = event.currentTarget;
-
-    if(!files) {
-        return;
-    }
-
-    Array.from(files).forEach(file => {
-        formData.append('images[]', file);
-    });
-}
-
-async function handlePatientRegister() {
-
-    formData.append('name', form.value.name);
-    formData.append('age', form.value.age);
-    formData.append('age_type', form.value.age_type);
-    formData.append('origin', form.value.origin);
-    formData.append('reason', form.value.reason);
-    formData.append('situation', form.value.situation);
-    formData.append('doctor', form.value.doctor);
-    formData.append('owner', form.value.owner);
-    formData.append('color', form.value.color);
-    formData.append('breed', form.value.breed);
-    formData.append('weight', form.value.weight);
-    formData.append('weight_type', form.value.weight_type);
-    formData.append('species', form.value.species);
-
-
-    const response = await useApi("patients/create", {method: "POST", body: formData});
-    const { message, patient, status } = response.data.value;
-
-    showToast({ message, status });
-    this.form.value = {};
-}
-
+onMounted(async () => {
+  doctorsData.value = await fetchDrs();
+  ownersData.value = await fetchOwnersData();
+  
+  console.log("Modal Visível:", props.isVisible);
+  console.log("Ref createPatientForm:", createPatientForm.value);
+  
+  // Aplica animação inicialmente se o modal já estiver visível ao montar
+  if (props.isVisible && createPatientForm.value) {
+    autoAnimate(createPatientForm.value);
+  }
+});
 
 async function fetchDrs() {
-    const response = await useApi("doctors");
-    return response.data.value.doutores;
+  const response = await useApi("doctors");
+  return response.data.value.doutores;
 }
 
 async function fetchOwnersData() {
-    const response = await useApi("owners");
-    return response.data.value;
+  const response = await useApi("owners");
+  return response.data.value;
 }
 
-onMounted(async () => {
-    doctorsData.value = await fetchDrs();
-    ownersData.value = await fetchOwnersData();
-});
+function handleHospitalizedInput() {
+  showHospitalizedInput.value = form.value.reason == 2;
+}
 
+async function handlePatientRegister() {
+  const formData = new FormData();
+  formData.append('name', form.value.name);
+  formData.append('age', form.value.age);
+  formData.append('age_type', form.value.age_type);
+  formData.append('origin', form.value.origin);
+  formData.append('reason', form.value.reason);
+  formData.append('situation', form.value.situation);
+  formData.append('doctor', form.value.doctor);
+  formData.append('owner', form.value.owner);
+  formData.append('color', form.value.color);
+  formData.append('breed', form.value.breed);
+  formData.append('weight', form.value.weight);
+  formData.append('weight_type', form.value.weight_type);
+  formData.append('species', form.value.species);
+  
+  const response = await useApi("patients/create", { method: "POST", body: formData });
+  const { message, patient, status } = response.data.value;
+  showToast({ message, status });
+  form.value = {};
+}
 </script>
 
 <style>
-
 .modal-overlay {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-y: auto;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 1000px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 1000px;
 }
 
 .close-modal-icon {
-    cursor: pointer;
+  cursor: pointer;
 }
-
 </style>

@@ -3,14 +3,14 @@ interface User {
 }
 
 const user = ref <User | null> (null);
-const authToken = ref (null);
+const authToken = ref <string | null> (null);
 
-async function fetchUser(cookie = useCookie("XSRF-TOKEN")) {
+async function fetchUser() {
     if(authToken.value) {
-        const response = await useApi("user");
-        user.value = response.data.value.user;
-        const userDataToCookie = JSON.stringify(user.value);
-        document.cookie = `User=${userDataToCookie}`;
+        await useApi("user").then((response: any) => {
+            user.value = response.data?.value.user
+            document.cookie = `User=${JSON.stringify(user.value)}`
+        });
     }
 }
 
@@ -19,15 +19,18 @@ async function login(form: any) {
         credentials: "include",
     });
 
-    const response = await useApi("login", {method: "POST", body: form.value});
-    const data = response.data.value;
+    return await useApi("login", {method: "POST", body: form.value})
+        .then( async (response: any) => {
+            if(response?.error.value?.statusCode) {
+                throw new Error(response?.error.value?.data.message)
+            }
 
-    if(data.status == 'success') {
-        authToken.value = response.data.value?.data.token;
-        document.cookie = "JWT-TOKEN=" + authToken.value;
-        await fetchUser();
-    }
-    return response;
+            const data: any = response?.data.value
+            authToken.value = data.data.token
+            document.cookie = "JWT-TOKEN=" + authToken.value
+            await fetchUser()
+        }
+    );
 }
 
 export { login, authToken, user };

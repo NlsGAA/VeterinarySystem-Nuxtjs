@@ -75,39 +75,7 @@
     </div>
 </template>
 
-<script src="./script.js">
-
-// async function updateUserData() {
-//     const response = await useApi(
-//         "user/update",
-//         {method: "POST", body: userData.value}
-//     );
-
-//     console.log(response);
-// }
-
-// function searchCep() {
-//     const cep = $('#cepInput').val();
-    
-//     if(cep.length == 8) {
-//         const self = this;
-//         $.ajax({
-//             url: 'https://viacep.com.br/ws/' + cep + '/json/',
-//             method: 'GET',
-//             success: function(response) {
-//                 self.userData.cep = response.cep;
-//                 self.userData.city = response.localidade;
-//                 self.userData.street = response.logradouro;
-//             },
-//             error: function(error) {
-//                 console.log(error);
-//             }
-//         });
-//     }
-
-//     // $('#cepInput').mask('00000-000');
-// }
-</script>
+<script src="./script.js"></script>
 
 <style>
 

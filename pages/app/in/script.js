@@ -44,7 +44,15 @@ export default {
                     }
                 });
             }
-            // $('#cepInput').mask('00000-000');
+        },
+
+        async updateUserData() {
+            await useApi("user/update", {method: "POST", body: this.userData}).then(() => {
+                this.getUserInfo().then((user) => {
+                    this.userData = user;
+                });
+                this.handleUserForm(true)
+            });
         },
 
         async getUserInfo() {
