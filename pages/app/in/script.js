@@ -37,7 +37,6 @@ export default {
                         this.userData.cep = response.cep
                         this.userData.city = response.localidade
                         this.userData.street = response.logradouro
-                        console.log(this.userData)
                     },
                     error: function(error) {
                         console.log(error)

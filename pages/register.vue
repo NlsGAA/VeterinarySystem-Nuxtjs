@@ -17,60 +17,77 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <div class="col-md-3 w-50 d-flex align-center row">
+  <!-- <div class="col-md-3 w-50 d-flex align-center row">
     <img
       src="public\img\Mask-Uses-3--Register-Page.png"
       alt=""
       class="w-50 mx-auto rounded pe-none"
     />
-  </div>
+  </div> -->
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-3 d-flex-column shadow-lg rounded align-items-center p-2 mx-auto">
+      <div>
+        <h2 class="fw-bold mb-1 text-center text-uppercase text-white fs-1">
+          Sign Up
+        </h2>
+      </div>
+      <div class="col-md-12 p-2">
+        <i>
+          <h4 v-if="userData.name != ''">
+            Dr(a): {{ userData.name }}
+            <font-awesome-icon icon="fa-solid fa-pen" class="text-grey fs-8 signature-icon"/>
+          </h4>
+        </i>
+        <div class="p-2 d-flex-inline">
+          <form @submit.prevent="handleRegister">
+            <label class="fw-bold mb-1">Name:</label>
+            <input
+            class="rounded w-100 mb-2 form-control"
+            v-model="userData.name"
+            maxlength="50"
+            type="text"
+            />
+            <p class="name-alert-message">(Os documentos serão assinados com esse nome)</p>
 
-  <div class="col-md-4 p-2 w-50 m-2">
-    <h2>Dr(a): {{ userData.name }}</h2>
-    <div class="p-2 d-flex-inline">
-      <form @submit.prevent="handleRegister">
-        <label class="fw-bold mb-1">Name:</label>
-        <input
-          class="rounded w-100 mb-2 form-control"
-          v-model="userData.name"
-          maxlength="50"
-          type="text"
-        />
+            <label class="fw-bold mb-1">Email:</label>
+            <input
+              class="rounded w-100 mb-2 form-control"
+              v-model="userData.email"
+              maxlength="50"
+              type="email"
+            />
 
-        <label class="fw-bold mb-1">Email:</label>
-        <input
-          class="rounded w-100 mb-2 form-control"
-          v-model="userData.email"
-          maxlength="50"
-          type="email"
-        />
+            <label class="fw-bold mb-1">Password:</label>
+            <input
+              class="rounded w-100 mb-2 form-control"
+              v-model="userData.password"
+              type="password"
+            />
 
-        <label class="fw-bold mb-1">Password:</label>
-        <input
-          class="rounded w-100 mb-2 form-control"
-          v-model="userData.password"
-          type="password"
-        />
+            <div class="w-100">
+              <span class="fw-bold fs-8"
+                >Já possui uma conta?
+                <NuxtLink href="/" class="link-opacity-50-hover"
+                  >Acesse</NuxtLink
+                ></span
+              >
+            </div>
 
-        <div class="w-100">
-          <span class="fw-bold fs-8"
-            >Já possui uma conta?
-            <NuxtLink href="/login" class="link-opacity-50-hover"
-              >Acesse</NuxtLink
-            ></span
-          >
+            <button class="btn btn-info w-50 mt-3" type="submit">Registrar-se</button>
+          </form>
         </div>
-
-        <button class="btn btn-success w-50 mt-3" type="submit">Login</button>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
+.name-alert-message {
+  font-size: 12px;
+}
 
-body {
-  background: linear-gradient(90deg, #4caf50, #009688);
-  height: 100%;
+.signature-icon {
+  font-size: 16px;
+  margin-left: 5px;
 }
 </style>

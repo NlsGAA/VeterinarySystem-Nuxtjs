@@ -152,7 +152,6 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import autoAnimate from '@formkit/auto-animate';
 
 const form = ref({});
 const ownersData = ref([]);
@@ -167,25 +166,9 @@ const props = defineProps({
   },
 });
 
-// Função que deve ser chamada ao alterar a visibilidade do modal
-watch(() => props.isVisible, (newVal) => {
-  if (newVal && createPatientForm.value) {
-    // Aplica animação quando a modal fica visível
-    autoAnimate(createPatientForm.value);
-  }
-});
-
 onMounted(async () => {
   doctorsData.value = await fetchDrs();
   ownersData.value = await fetchOwnersData();
-  
-  console.log("Modal Visível:", props.isVisible);
-  console.log("Ref createPatientForm:", createPatientForm.value);
-  
-  // Aplica animação inicialmente se o modal já estiver visível ao montar
-  if (props.isVisible && createPatientForm.value) {
-    autoAnimate(createPatientForm.value);
-  }
 });
 
 async function fetchDrs() {
