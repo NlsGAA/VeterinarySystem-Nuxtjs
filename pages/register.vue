@@ -32,22 +32,22 @@ const handleRegister = async () => {
         </h2>
       </div>
       <div class="col-md-12 p-2">
-        <i>
-          <h4 v-if="userData.name != ''">
-            Dr(a): {{ userData.name }}
-            <font-awesome-icon icon="fa-solid fa-pen" class="text-grey fs-8 signature-icon"/>
-          </h4>
-        </i>
         <div class="p-2 d-flex-inline">
+          <i>
+            <h4 v-if="userData.name != ''">
+              Dr(a): {{ userData.name }}
+              <font-awesome-icon icon="fa-solid fa-pen" class="text-grey fs-8 signature-icon"/>
+            </h4>
+          </i>
           <form @submit.prevent="handleRegister">
             <label class="fw-bold mb-1">Name:</label>
             <input
-            class="rounded w-100 mb-2 form-control"
+            class="rounded w-100 form-control"
             v-model="userData.name"
             maxlength="50"
             type="text"
             />
-            <p class="name-alert-message">(Os documentos serão assinados com esse nome)</p>
+            <p class="name-alert-message mb-2">Os documentos serão assinados com esse nome.</p>
 
             <label class="fw-bold mb-1">Email:</label>
             <input

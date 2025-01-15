@@ -1,69 +1,3 @@
-<script setup>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { showToast } from '~/utilities/toast';
-
-definePageMeta({layout: "default"});
-
-const patientId = ref(null);
-const patientsPayload = ref(null);
-const showModal = ref(false);
-const showWarningModal = ref(false);
-const showEditPatientModal = ref(false);
-const filters = ref({patientInfoParam: ""});
-
-async function getPatients() {
-  return await useApi("patients/dashboard", {method: "POST"});
-}
-
-function selectAllCheckboxes() {
-  console.log('entrou');
-}
-
-async function filterPatients() {
-  const filteredPatientsData = await useApi("patients/dashboard", {method: "POST", body: filters.value});
-  const { message, pacientes } = filteredPatientsData.data.value;
-
-  patientsPayload.value = pacientes || [];
-  showToast({message, status: 'success'});
-}
-
-function openEditPatientModal(patientId) {
-  this.patientId = patientId;
-  this.showEditPatientModal = true;
-}
-
-async function destroy(endpoint) {
-    const response = await useApi(endpoint);
-    const { message, status } = response.data.value;
-    this.patientId = null;
-
-    if(status == 200) {
-      showWarningModal.value = false;
-      showToast({message, status: 'success'});
-    }
-}
-
-function openWarningModal(patientId){
-  this.patientId = patientId;
-  showWarningModal.value = true;
-}
-
-onMounted(async () => {
-  try {
-    var response =  await getPatients();
-    const patientsData = response.data.value
-
-    if(patientsData) {
-      patientsPayload.value = patientsData.pacientes || [];
-    }
-  } catch (error) {
-    console.error("Erro ao buscar pacientes!", error)
-    patientsPayload.value = [];
-  }
-});
-
-</script>
-
 <template>
 
   <div class="mb-3">
@@ -73,7 +7,7 @@ onMounted(async () => {
   <div class="d-flex justify-content-between mb-3 col-md-12">
       <div class="">
         <form @submit.prevent="filterPatients" class="d-flex">
-            <input class="form-control me-2 w-auto input-border-disable" v-model="filters.patientInfoParam" type="text" placeholder="Nome do paciente" style="box-shadow: none; outline: none"/>
+            <input class="form-control me-2 w-auto input-border-disable" v-model="filterBy" type="text" placeholder="Nome do paciente" style="box-shadow: none; outline: none"/>
             <button class="btn no-wrap .m" type="submit">
               <font-awesome-icon icon="fa-solid fa-search" />
               Filtrar resultados
@@ -82,19 +16,19 @@ onMounted(async () => {
       </div>
 
       <div>
-        <button class="btn btn-primary" @click="showModal = !showModal">
+        <button class="btn btn-primary" @click="createPatientModal = !createPatientModal">
           <font-awesome-icon icon="fa-solid fa-plus-circle" />
           Novo paciente
         </button>
         <CreatePatientForm
-          :isVisible="showModal"
-          @close="showModal = false" 
+          :isVisible="createPatientModal"
+          @close="createPatientModal = false" 
         />
       </div>
 
   </div>
 
-  <div class="col-md-12 p-3 d-flex-inline body-table-content">
+  <div class="col-md-12 p-3 d-flex-inline body-table-content" v-if="patientsPayload">
     <table class="col-md-12">
       <thead>
         <tr>
@@ -109,7 +43,7 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="patient in patientsPayload" :key="patient.id">
+        <tr v-for="patient in patients" :key="patient.id">
           <td><input type="checkbox" :key="patient.id"/></td>
           <td><span class="fs-5">{{patient.id}}</span></td>
           <td><span class="fs-5">{{patient.name}}</span></td>
@@ -128,19 +62,28 @@ onMounted(async () => {
       </tbody>
     </table>
   </div>
+
+  <div v-else class="col-md-12 p-3 d-flex-inline body-table-content">
+    <div class="text-center">
+      <h3>Você ainda não possui pacientes cadastrados!</h3>
+    </div>
+  </div>
   
-  <EditPatientForm v-if="showEditPatientModal"
-    :isVisible="showEditPatientModal"
+  <EditPatientForm v-if="editPatientModal"
+    :isVisible="editPatientModal"
     :patientId="patientId"
-    @close="showEditPatientModal = false"
+    @close="editPatientModal = false"
   />
 
-  <WarningModal v-if="showWarningModal"
-    :isVisible="showWarningModal"
-    @close="showWarningModal = false"
+  <WarningModal v-if="warningModal"
+    :isVisible="warningModal"
+    @close="warningModal = false"
     @confirmed="destroy(`patients/delete/${patientId}`)"
   />
 </template>
+
+
+<script src="./script.js"></script>
 
 <style>
 
@@ -163,8 +106,8 @@ table thead th {
 }
 
 table tbody td {
-    border-bottom: 2px solid #f6f6f6 !important;
-    color: #000;
+  border-bottom: 2px solid #f6f6f6 !important;
+  color: #000;
 }
 
 </style>
