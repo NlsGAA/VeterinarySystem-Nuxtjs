@@ -34,9 +34,7 @@ export default {
                     url: 'https://viacep.com.br/ws/' + cep + '/json/',
                     method: 'GET',
                     success: (response) => {
-                        this.userData.cep = response.cep
-                        this.userData.city = response.localidade
-                        this.userData.street = response.logradouro
+                        this.userData = {...response}
                     },
                     error: function(error) {
                         console.log(error)

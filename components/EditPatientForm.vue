@@ -1,10 +1,10 @@
 <template>
-    <div v-if="isVisible" class="modal-overlay">
+    <div v-if="showModal" class="modal-overlay">
         <div class="modal-content">
             <div class="d-flex justify-content-end fs-4">
                 <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="$emit('close')" />
             </div>
-            <span class="fs-2 fw-bold mb-2">Edtiar paciente:</span>
+            <span class="fs-2 fw-bold mb-2">Editar paciente:</span>
             <form @submit.prevent="handlePatientRegister" method="POST" enctype="multipart/form-data">
                 <div class="row p-3 w-100">
                     <div class="row mb-2">
@@ -154,6 +154,7 @@
 const form = ref({});
 const ownersData = ref([]);
 const doctorsData = ref([]);
+const showModal = ref(false);
 const showHospitalizedInput = ref(false);
 
 const props = defineProps({
@@ -181,7 +182,6 @@ function handleImageFiles(event) {
     imagesData.forEach((image) => {
         form.value.images = image;
     })
-    console.log(form.value.images);
 }
 
 const handlePatientData = async () => {
@@ -197,7 +197,6 @@ const handlePatientRegister = async () => {
     window.location.reload();
 }
 
-
 async function fetchDrs() {
     const response = await useApi("doctors");
     return response.data.value.doutores;
@@ -209,9 +208,12 @@ async function fetchOwnersData() {
 }
 
 onMounted(async () => {
-    form.value = await handlePatientData();
-    doctorsData.value = await fetchDrs();
-    ownersData.value = await fetchOwnersData();
+    await handlePatientData().then((patientData) => {
+        form.value        = patientData
+        showModal.value   = props.isVisible
+        doctorsData.value = fetchDrs();
+        ownersData.value  = fetchOwnersData();
+    });
 });
 
 </script>
@@ -229,6 +231,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: scroll;
 }
 
 .modal-content {
