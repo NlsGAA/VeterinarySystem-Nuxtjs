@@ -1,29 +1,3 @@
-<script setup>
-definePageMeta({ layout: "default" });
-
-const user = ref(null);
-
-const isDropDownVisible = ref({
-  profileInfoDropDown: false,
-  registerDataDropDown: false
-});
-
-function toggleMenu() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('show');
-}
-
-function toggleDropdown(teste) {
-  const dropDownTarget = teste.target.id;
-  this.isDropDownVisible[dropDownTarget] = !this.isDropDownVisible[dropDownTarget];
-}
-
-onMounted(() => {
-  const userData = useCookie("User").value;
-  user.value = userData;
-})
-</script>
-
 <template>
   <div class="col-md-12 nav-bar-container" style=" border-bottom: 1px solid #fff;">
     <nav class="d-flex align-items-center justify-content-around container p-1">
@@ -52,13 +26,14 @@ onMounted(() => {
     </nav>
   </div>
 
-  <div class="d-flex justify-content-center vh-100 templateSlot">
-    <div class="col-md-8">
-      <slot />
-    </div>
-  </div>
+ 
 
   <div class="sidebar" id="sidebar">
+    <div class="d-flex justify-content-end mb-5">
+      <div class="me-4 fs-4">
+        <font-awesome-icon icon="fa-solid fa-xmark" class="text-grey pe-auto close-modal-icon" @click="toggleMenu" />
+      </div>
+    </div>
     <div class="d-flex flex-column justify-content-center">
       <ul>
         <a href="/app/patients" class="text-decoration-none text-white fs-6">
@@ -100,7 +75,15 @@ onMounted(() => {
     </div>
   </div>
 
+  <div class="d-flex justify-content-center vh-100 templateSlot">
+    <div class="col-md-8">
+      <slot />
+    </div>
+  </div>
+
 </template>
+
+<script src="./script.js"></script>
 
 <style>
   body {
@@ -125,7 +108,7 @@ onMounted(() => {
     top: 0;
     left: -250px;
     transition: left 0.3s ease;
-    padding-top: 60px;
+    padding-top: 20px;
 }
 
 .sidebar ul {
@@ -147,7 +130,7 @@ onMounted(() => {
 }
 
 ul li:hover{
-  background-color: #444;
+  background-color: #6bb120;
 }
 
 .dropdown-arrow-icon {
@@ -156,5 +139,8 @@ ul li:hover{
   margin-top: 5px;
 }
 
+.close-modal-icon:hover {
+  color: #6bb120;
+}
 
 </style>

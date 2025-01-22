@@ -38,6 +38,7 @@ export default {
                 useFetch(`https://viacep.com.br/ws/${cep}/json/`).then((response) => {
                     const residence = response.data.value
                     this.userData.cep = residence.cep
+                    this.userData.city = residence.localidade
                     this.userData.street = residence.logradouro
                 }).catch((error) => {
                     this.errors = error.message

@@ -46,15 +46,11 @@
                             <input class="form-control" id="cepInput" @keyup="searchCep()" v-model="userData.cep" :disabled="isLoading"/>
                             <Loading :height="25" :width="25" v-if="isLoading" style="margin-left: -30px; margin-top: 6px;"></Loading>
                         </div>
-                        <span v-if="errors">{{ errors }}</span>
+                        <span class="text-danger fw-bold" v-if="errors">{{ errors }}</span>
                     </div>
                     <div class="flex-column w-100">
                         <label class="fw-bold">City:</label>
-                        <select class="form-select" name="city" id="city" v-model="userData.city">
-                            <option value="1">São Paulo</option>
-                            <option value="2">Rio de Janeiro</option>
-                            <option value="3" selected>Curitiba</option>
-                        </select>
+                        <input class="form-control" name="city" id="city" v-model="userData.city"/>
                     </div>
                 </div>
                 <div class="flex w-100 mt-3">
