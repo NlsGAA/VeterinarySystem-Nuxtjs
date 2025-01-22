@@ -5,6 +5,7 @@ interface User {
 const user = ref <User | null> (null);
 const authToken = ref <string | null> (null);
 const errors = ref <string | null> (null);
+const isLoading = ref <boolean> (false);
 
 async function fetchUser() {
     if(authToken.value) {
@@ -16,6 +17,8 @@ async function fetchUser() {
 }
 
 async function login(form: object) {
+    isLoading.value = true
+
     await useFetch("http://localhost:8000/sanctum/csrf-cookie", {
         credentials: "include",
     });
@@ -30,8 +33,9 @@ async function login(form: object) {
             authToken.value = data.data.token
             document.cookie = "JWT-TOKEN=" + authToken.value
             await fetchUser()
-        }
-    );
+        }).finally(() => {
+            isLoading.value = false
+        })
 }
 
 async function handleLogin(loginData: object) {
@@ -42,4 +46,4 @@ async function handleLogin(loginData: object) {
     });
 }
 
-export { authToken, user, handleLogin, errors };
+export { authToken, user, handleLogin, errors, isLoading };

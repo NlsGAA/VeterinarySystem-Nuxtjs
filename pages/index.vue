@@ -1,5 +1,5 @@
 <script setup>
-import { handleLogin, errors } from "~/stores/useAuthStore";
+import { handleLogin, errors, isLoading } from "~/stores/useAuthStore";
 
 definePageMeta({ layout: "guest" });
 
@@ -13,7 +13,7 @@ const login = () => { handleLogin(form.value) }
 
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="col-md-6 bg-white d-flex shadow-lg rounded align-items-center p-2 mx-auto">
+    <div class="col-md-6 bg-white d-flex shadow-lg rounded align-items-center p-2 mx-auto content-container">
       <div class="col-md-4 w-50 p-2 d-flex">
         <img
           src="public\img\medicine_b1ol_login_page.png"
@@ -95,7 +95,10 @@ const login = () => { handleLogin(form.value) }
                 Cadastre-se
               </NuxtLink>
             </span>
-            <button class="btn btn-success w-50 mt-3" type="submit">Login</button>
+            <button class="btn btn-success w-50 mt-3 flex-column align-items-center justify-content-center" :disabled="isLoading">
+              <Loading v-if="isLoading" :height="25" :width="25"></Loading>
+              <span v-if="!isLoading">Login</span>
+            </button>
           </form>
         </div>
       </div>

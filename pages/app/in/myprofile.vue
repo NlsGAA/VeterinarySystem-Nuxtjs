@@ -42,7 +42,11 @@
                 <div class="flex mt-3">
                     <div class="flex-column w-100 me-4">
                         <label class="fw-bold">CEP:</label>
-                        <input class="form-control" id="cepInput" @keyup="searchCep()" v-model="userData.cep"/>
+                        <div class="d-flex">
+                            <input class="form-control" id="cepInput" @keyup="searchCep()" v-model="userData.cep" :disabled="isLoading"/>
+                            <Loading :height="25" :width="25" v-if="isLoading" style="margin-left: -30px; margin-top: 6px;"></Loading>
+                        </div>
+                        <span v-if="errors">{{ errors }}</span>
                     </div>
                     <div class="flex-column w-100">
                         <label class="fw-bold">City:</label>

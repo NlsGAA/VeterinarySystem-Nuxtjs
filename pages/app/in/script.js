@@ -11,6 +11,10 @@ export default {
         isEditing: {
             type: Boolean,
             default: false
+        },
+        isLoadingContent: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -30,16 +34,16 @@ export default {
         searchCep() {
             const cep = $('#cepInput').val();
             if(cep.length == 8) {
-                $.ajax({
-                    url: 'https://viacep.com.br/ws/' + cep + '/json/',
-                    method: 'GET',
-                    success: (response) => {
-                        this.userData = {...response}
-                    },
-                    error: function(error) {
-                        console.log(error)
-                    }
-                });
+                this.isLoading = true
+                useFetch(`https://viacep.com.br/ws/${cep}/json/`).then((response) => {
+                    const residence = response.data.value
+                    this.userData.cep = residence.cep
+                    this.userData.street = residence.logradouro
+                }).catch((error) => {
+                    this.errors = error.message
+                }).finally(() => {
+                    this.isLoading = false
+                })
             }
         },
 
@@ -62,7 +66,9 @@ export default {
     data() {
         return {
             localIsEditing: this.isEditing,
-            userData: { ...this.user }
+            userData: { ...this.user },
+            isLoading: this.isLoadingContent,
+            errors: ""
         }
     },
 

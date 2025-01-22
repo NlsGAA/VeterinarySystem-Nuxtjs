@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: ["bootstrap/dist/css/bootstrap.min.css"],
+  build: {
+    transpile: ['gsap'],
+  },
   plugins: [
     { src: "~/plugins/bootstrap.js", mode: "client" },
     "~/plugins/font-awesome.js",
