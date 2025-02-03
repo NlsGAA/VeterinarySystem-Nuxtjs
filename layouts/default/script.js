@@ -1,3 +1,5 @@
+import { gsap } from "gsap";
+
 export default {
     methods: {
         toggleMenu() {
@@ -19,7 +21,22 @@ export default {
     },
 
     mounted() {
-        const userData = useCookie("User").value;
-        this.user = userData;
+        this.user = useCookie("User").value;
+         
+        $("ul li").each(function (index, element) {
+            let listItemAnimation;
+            $(element).hover(
+                () => {
+                    listItemAnimation = gsap.to(element, {
+                        scale: 1.1,
+                        duration: 0.3,
+                        ease: "easeInOut"
+                    })
+                }, () => {
+                    listItemAnimation.reverse()
+                    
+                }
+            )
+        })
     }
 }

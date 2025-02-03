@@ -25,6 +25,10 @@ export default {
         patientsPayload: {
             type: Object,
             default: []
+        },
+        isFiltering: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -38,12 +42,16 @@ export default {
         },
           
         async filterPatients() {
-            const filteredPatientsData = await useApi("patients/dashboard", {method: "POST", body: this.filterBy});
-            const { message, pacientes } = filteredPatientsData.data.value;
-            console.log(filteredPatientsData);
-            
-            this.patients = pacientes;
-            showToast({message, status: 'success'});
+            this.isFilteringPatients = true;
+            await useApi("patients/dashboard", {method: "POST", body: this.filterBy})
+                .then((patientsFiltered) => {
+                    const { message, pacientes } = patientsFiltered.data.value;
+                    this.patients = pacientes;
+                    showToast({message, status: 'success'});
+                })
+                .finally(() => {
+                    this.isFilteringPatients = false
+                })
         },
           
         openEditPatientModal(patientId) {
@@ -74,19 +82,18 @@ export default {
             warningModal: this.showWarningModal,
             editPatientModal: this.showEditPatientModal,
             patientId: this.patientNumber,
-            filterBy: this.filteringBy,
-            patients: {...this.patientsPayload}
+            filterBy: {
+                filter: this.filteringBy
+            },
+            patients: {...this.patientsPayload},
+            isFilteringPatients: this.isFiltering
         }
-    },
-
-    watch: {
-
     },
 
     mounted() {
         try {
             this.getPatients().then((data) => {
-                this.patients = data.data.value.pacientes
+                this.patients = data.data?.value?.pacientes || [];
             });
         } catch (error) {
             console.log(error.message);

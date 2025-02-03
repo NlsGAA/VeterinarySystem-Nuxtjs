@@ -7,7 +7,7 @@
   <div class="d-flex justify-content-between mb-3 col-md-12">
       <div class="">
         <form @submit.prevent="filterPatients" class="d-flex">
-            <input class="form-control me-2 w-auto input-border-disable" v-model="filterBy" type="text" placeholder="Nome do paciente" style="box-shadow: none; outline: none"/>
+            <input class="form-control me-2 w-auto input-border-disable" v-model="filterBy.filter" type="text" placeholder="Nome do paciente" style="box-shadow: none; outline: none"/>
             <button class="btn no-wrap .m" type="submit">
               <font-awesome-icon icon="fa-solid fa-search" />
               Filtrar resultados
@@ -28,8 +28,9 @@
 
   </div>
 
-  <div class="col-md-12 p-3 d-flex-inline body-table-content" v-if="patientsPayload">
-    <table class="col-md-12">
+  <div class="col-md-12 p-3 d-flex-block body-table-content" v-if="patients.length !== 0">
+    <Loading class="offset-md-5" v-if="isFilteringPatients"></Loading>
+    <table class="col-md-12" v-if="!isFilteringPatients">
       <thead>
         <tr>
             <th><input type="checkbox" class="select-all-on-check" @change="selectAllCheckboxes()" /></th>

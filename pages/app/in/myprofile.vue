@@ -1,5 +1,5 @@
 <template>
-    <div class="flex col-md-12">
+    <div class="d-flex col-md-12">
         <div class="flex-column justify-content-center mt-5">
             <div class="image-container">
                 <img
@@ -14,7 +14,7 @@
             <h2>{{ userData.name }}</h2>
         </div>
         <div class="ms-5 col-md-8 p-3">
-            <div class="w-100 flex justify-content-end mb-3">
+            <div class="w-100 d-flex justify-content-end mb-3">
                 <button v-if="localIsEditing" type="button" class="btn btn-danger me-2 active-none" @click="handleUserForm(true)">
                     <font-awesome-icon icon="fa-solid fa-xmark" />
                     Cancelar
@@ -25,7 +25,7 @@
                 </button>
             </div>
             <fieldset disabled>
-                <div class="flex">
+                <div class="d-flex">
                     <div class="flex-column w-100 me-4">
                         <label class="fw-bold">Cellphone:</label>
                         <input class="form-control" id="cellphone" v-model="userData.cellphone"/>
@@ -39,7 +39,7 @@
                     <label class="fw-bold">Email:</label>
                     <input class="form-control" v-model="userData.email" required/>
                 </div>
-                <div class="flex mt-3">
+                <div class="d-flex mt-3">
                     <div class="flex-column w-100 me-4">
                         <label class="fw-bold">CEP:</label>
                         <div class="d-flex">
@@ -53,12 +53,12 @@
                         <input class="form-control" name="city" id="city" v-model="userData.city"/>
                     </div>
                 </div>
-                <div class="flex w-100 mt-3">
+                <div class="d-flex w-100 mt-3">
                     <div class="flex-column w-50 me-4">
                         <label class="fw-bold">Complement:</label>
                         <input class="form-control" v-model="userData.complement"/>
                     </div>
-                    <div class="flex w-100">
+                    <div class="d-flex w-100">
                         <div class="flex-column col-md-10 me-2">
                             <label class="fw-bold">Street:</label>
                             <input class="form-control" v-bind:value="userData.street"/>

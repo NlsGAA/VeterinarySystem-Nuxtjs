@@ -106,9 +106,9 @@
                         <div class="col-md-12">
                             <label for="motivoCadastro" class="form-label fw-bold">Motivo do cadastro:<span class="text-danger">*</span></label>
                             <select class="form-select" name="motivoCadastro" id="motivoCadastro" @change="handleHospitalizedInput()" v-model="form.reason" >
-                                <option value="1" selected>Serviços gerais</option>
-                                <option value="2">Internamento</option>
-                                <option value="3">Consulta</option>
+                                <option v-for="reason in reasons" :key="reason.id" :value="reason.id">
+                                    {{ reason.description }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -119,11 +119,9 @@
                                 <div class="col-md-12">
                                     <label for="situacaoInternacao" class="form-label fw-bold">Situação:<span class="text-danger">*</span></label>
                                     <select class="form-select" name="situacaoInternacao" id="situacaoInternacao" v-model="form.situation" v-bind:required="showHospitalizedInput">
-                                        <option value="1" selected>Urgência</option>
-                                        <option value="2">Clínica</option>
-                                        <option value="3">Cirúgico</option>
-                                        <option value="4">Terapêutico</option>
-                                        <option value="5">Observação</option>
+                                        <option v-for="situation in hospitalizedSituation" :key="situation.situation_id" :value="situation.situation_id">
+                                            {{ situation.name }}
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -132,7 +130,9 @@
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Dr(a) responsável:<span class="text-danger">*</span></label>
                                     <select class="form-select" name="drResponsavel" id="drResponsavel" v-model="form.doctor" v-bind:required="showHospitalizedInput">
-                                        <option v-for="doctor in doctorsData" :key="doctor.id" :value="doctor.id">{{ doctor.name }}</option>
+                                        <option v-for="doctor in doctorsData" :key="doctor.id" :value="doctor.id">
+                                            {{ doctor.name }}
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -158,6 +158,8 @@ const ownersData = ref([]);
 const doctorsData = ref([]);
 const showHospitalizedInput = ref(false);
 const createPatientForm = ref(null);
+const hospitalizedSituation = ref([]);
+const reasons = ref([]);
 
 const props = defineProps({
   isVisible: {
@@ -169,6 +171,7 @@ const props = defineProps({
 onMounted(async () => {
   doctorsData.value = await fetchDrs();
   ownersData.value = await fetchOwnersData();
+  reasons.value = await getReasonSituation();
 });
 
 async function fetchDrs() {
@@ -181,8 +184,25 @@ async function fetchOwnersData() {
   return response.data.value;
 }
 
-function handleHospitalizedInput() {
-  showHospitalizedInput.value = form.value.reason == 2;
+async function handleHospitalizedInput() {
+    showHospitalizedInput.value = form.value.reason == 2
+
+    getHospitalizedSituation()
+        .then((response) => {
+            this.hospitalizedSituation = response.data.value
+        })
+        .catch((error) => {
+            console.error(error.message)
+        })
+}
+
+async function getHospitalizedSituation() {
+    return await useApi("types/situation")
+}
+
+async function getReasonSituation() {
+    const reason = await useApi("types/reason")
+    return reason.data.value
 }
 
 async function handlePatientRegister() {

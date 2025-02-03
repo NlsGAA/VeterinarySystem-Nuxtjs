@@ -8,6 +8,16 @@ const form = ref({
   password: "",
 });
 
+if(form.value.email !== "") {
+  console.log(form.value.email)
+}
+
+function maskEmailName() {
+  const email = form.value.email;
+  const name = email.split("@")[0];
+  form.nameMasked = name;
+}
+
 const login = () => { handleLogin(form.value) }
 </script>
 
@@ -25,7 +35,7 @@ const login = () => { handleLogin(form.value) }
         <div v-if="errors != undefined">
           <span class="text-danger fw-bold">{{ errors }}</span>
         </div>
-        <h3>Seja-bem vindo(a) {{ form.email }}!</h3>
+        <h3>Seja-bem vindo(a) {{ form?.nameMasked }}!</h3>
         <div class="p-2 d-flex-inline">
           <form @submit.prevent="login">
             <div class="container-fluid">

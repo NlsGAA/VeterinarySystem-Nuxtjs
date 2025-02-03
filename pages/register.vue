@@ -24,8 +24,8 @@ const handleRegister = async () => {
       class="w-50 mx-auto rounded pe-none"
     />
   </div> -->
-  <div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="col-md-3 d-flex-column shadow-lg rounded align-items-center p-2 mx-auto">
+  <div class="d-flex justify-content-center align-items-center vh-100 container">
+    <div class="col-md-3 d-flex-column shadow-lg rounded align-items-center p-2 mx-auto content-container">
       <div>
         <h2 class="fw-bold mb-1 text-center text-uppercase text-white fs-1">
           Sign Up
@@ -82,6 +82,11 @@ const handleRegister = async () => {
 </template>
 
 <style>
+.content-container {
+  position: absolute;
+  backdrop-filter: blur(10px);
+}
+
 .name-alert-message {
   font-size: 12px;
 }

@@ -9,10 +9,10 @@ export function useApi<T>(endpoint: string, options: UseFetchOptions<T> = {}) {
     if(csrfToken) {
         headers["X-XSRF-TOKEN"] = csrfToken.value as string;
     }
+    
     if(bearerToken) {
         headers["Authorization"] = "Bearer " + bearerToken.value;
     }
-
 
     return useFetch("http://localhost:8000/api/" + endpoint, {
         credentials: "include",
