@@ -18,7 +18,7 @@
                             <span> Ver todas</span>
                         </button>
                     </div>
-                    <div class="col-md-6 bg-white rounded align-items-center p-2">
+                    <div class="col-md-9 bg-white rounded align-items-center p-2">
                         <div class="col-md-12">
                             <div class="d-flex align-items-center">
                                 <table class="w-100">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <h4 class="">Patient description:</h4>
+                    <h4 class="">Descrição do paciente:</h4>
                     <form @submit.prevent="updatePatientDescription">
                         <textarea class="col-md-12" :disabled="!isEditing" :readonly="!isEditing">{{ patient?.description }}</textarea>
                         <button class="btn btn-success me-2" v-if="isEditing">Salvar</button>

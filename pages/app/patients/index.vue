@@ -34,7 +34,7 @@
       <thead>
         <tr>
             <th><input type="checkbox" class="select-all-on-check" @change="selectAllCheckboxes()" /></th>
-            <th class="fs-5">ID</th>
+            <th class="fs-5">Dt. cadastro</th>
             <th class="fs-5">Nome</th>
             <th class="fs-5">Espécie</th>
             <th class="fs-5">Raça</th>
@@ -46,11 +46,11 @@
       <tbody>
         <tr v-for="patient in patients" :key="patient.id">
           <td><input type="checkbox" :key="patient.id"/></td>
-          <td><span class="fs-5">{{patient.id}}</span></td>
+          <td><span class="fs-5">{{patient.created_at}}</span></td>
           <td><span class="fs-5">{{patient.name}}</span></td>
           <td><span class="fs-5">{{patient.species}}</span></td>
           <td><span class="fs-5">{{patient.breed}}</span></td>
-          <td><span class="fs-5">ainda n tem</span></td>
+          <td><span class="fs-5">{{patient.reason}}</span></td>
           <td><span class="fs-5">{{patient.owner_name}}</span></td>
           <td>
             <div class="">

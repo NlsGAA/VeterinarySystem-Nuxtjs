@@ -47,7 +47,6 @@ export default {
                 .then((patientsFiltered) => {
                     const { message, pacientes } = patientsFiltered.data.value;
                     this.patients = pacientes;
-                    showToast({message, status: 'success'});
                 })
                 .finally(() => {
                     this.isFilteringPatients = false
