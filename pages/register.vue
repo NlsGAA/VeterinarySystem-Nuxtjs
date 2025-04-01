@@ -17,13 +17,6 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <!-- <div class="col-md-3 w-50 d-flex align-center row">
-    <img
-      src="public\img\Mask-Uses-3--Register-Page.png"
-      alt=""
-      class="w-50 mx-auto rounded pe-none"
-    />
-  </div> -->
   <div class="d-flex justify-content-center align-items-center vh-100 container">
     <div class="col-md-3 d-flex-column shadow-lg rounded align-items-center p-2 mx-auto content-container">
       <div>

@@ -26,13 +26,18 @@ export default {
                     body: this.patient
                 })
             }
+        },
+
+        async getPatientLog(patientId) {
+            return await useApi("logs/patient/" + patientId)
         }
     },
 
     data() {
         return {
             patient: null,
-            isEditing: false
+            isEditing: false,
+            patientLog: [],
         }
     },
 
@@ -43,6 +48,20 @@ export default {
             .then((response) => {
                 const { paciente, status } = response.data.value
                 this.patient = { ...paciente }
+            })
+            .catch((error) => {
+                console.error(error.message)
+            })
+        
+        this.getPatientLog(patientId)
+            .then((response) => {
+                const { logs } = response.data.value
+
+                const sortedLogs = logs.sort((a, b) => {
+                    return new Date(b.created_at_formatted) - new Date(a.created_at_formatted)
+                })
+
+                this.patientLog = sortedLogs
             })
             .catch((error) => {
                 console.error(error.message)

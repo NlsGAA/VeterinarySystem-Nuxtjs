@@ -57,7 +57,7 @@
                             <div class="d-flex align-items-center">
                                 <select class="form-select me-4" name="patientOwner" id="patientOwner" v-model="form.owner" required>
                                     <option v-for="owner in ownersData" :key="owner.id" :value="owner.id">
-                                        {{ owner.firstName }} {{ owner.lastName }}]
+                                        {{ owner.firstName }} {{ owner.lastName }}
                                     </option>
                                 </select>
                                 <button class="btn btn-success w-25" type="button">
@@ -208,11 +208,11 @@ async function fetchOwnersData() {
 }
 
 onMounted(async () => {
-    await handlePatientData().then((patientData) => {
+    await handlePatientData().then(async (patientData) => {
         form.value        = patientData
         showModal.value   = props.isVisible
-        doctorsData.value = fetchDrs();
-        ownersData.value  = fetchOwnersData();
+        doctorsData.value = await fetchDrs();
+        ownersData.value  = await fetchOwnersData();
     });
 });
 
