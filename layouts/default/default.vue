@@ -76,7 +76,7 @@
   </div>
 
   <div class="d-flex justify-content-center vh-100 templateSlot">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <slot />
     </div>
   </div>
@@ -88,7 +88,7 @@
 <style>
   body {
     background-color: #fdfbfb !important;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .nav-bar-container {

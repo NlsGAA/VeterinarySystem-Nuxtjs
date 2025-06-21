@@ -65,11 +65,6 @@ const form = ref({});
 async function handleOwnerRegister() {
     const response = await useApi("owners/update", {method: "POST", body: form.value});
     const { message, owner, status } = response.data.value;
-
-    console.log(response.data.value);
-    console.log(message);
-    console.log(owner);
-    console.log(status);
 }
 
 </script>
