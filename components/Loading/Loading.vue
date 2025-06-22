@@ -6,7 +6,7 @@
 
 <style>
 * {
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .inside-circle {

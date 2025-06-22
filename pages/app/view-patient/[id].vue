@@ -155,21 +155,21 @@
                             <div class="d-flex col-md-12 border-top mb-3 pt-2">
                                 <div class="col-md-6 d-flex flex-column justify-content-center">
                                     <span class="text-body-secondary">Nome do Tutor</span>
-                                    <span>Nome Fake</span>
+                                    <span>{{  patient.owner.name }}</span>
                                 </div>
                                 <div class="col-md-6 d-flex flex-column">
                                     <span class="text-body-secondary">Telefone</span>
-                                    <span>419999999999</span>
+                                    <span>{{ formatPhone(patient.owner.cellphone) }}</span>
                                 </div>
                             </div>
                             <div class="d-flex col-md-12 border-top mb-3 pt-2">
                                 <div class="col-md-6 d-flex flex-column">
                                     <span class="text-body-secondary">Email</span>
-                                    <span>Fake email</span>
+                                    <span>{{ patient.owner.email }}</span>
                                 </div>
                                 <div class="col-md-6 d-flex flex-column">
                                     <span class="text-body-secondary">Endereço</span>
-                                    <span>Fake date</span>
+                                    <span>{{ patient.owner.address }}</span>
                                 </div>
                             </div>
                         </div>

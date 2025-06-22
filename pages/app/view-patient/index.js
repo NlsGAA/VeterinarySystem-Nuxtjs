@@ -30,7 +30,14 @@ export default {
 
         async getPatientLog(patientId) {
             return await useApi("logs/patient/" + patientId)
-        }
+        },
+
+        formatPhone(phone) {
+            if ( !phone || phone == "" ) {
+                return phone
+            }
+            return phone.toString().replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3")
+        },
     },
 
     data() {
