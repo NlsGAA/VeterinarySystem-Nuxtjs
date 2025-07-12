@@ -16,7 +16,7 @@
                         <div class="d-flex flex-column ms-4">
                             <h4>{{ patient.name }}</h4>
                             <span class="text-body-secondary">{{ patient.species }}, {{ patient.breed }}</span>
-                            <span class="text-body-secondary">ID: 1234</span>
+                            <span class="text-body-secondary">ID: {{ patient.id }}</span>
                         </div>
                     </div>
                     <div class="mt-2">
@@ -102,10 +102,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <tr v-for="log in patientLog"> -->
-                                        <!-- <td>{{ log.created_at_formatted }}</td>
-                                        <td>{{ log.message }}</td> -->
-                                    <!-- </tr> -->
                                      <tr>
                                          <td>01/01/2023</td>
                                          <td>Teste</td>
