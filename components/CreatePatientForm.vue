@@ -9,7 +9,7 @@
                 
                 <Collapse
                     title="Dados Gerais"
-                    :startOppened="true"
+                    :oppenedByDefault="true"
                 >
                     <form @submit.prevent="handlePatientRegister" method="POST" enctype="multipart/form-data">
                         <div class="row mb-2">

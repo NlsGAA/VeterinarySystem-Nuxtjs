@@ -3,7 +3,7 @@ import gsap from "gsap";
 export default {
     name: "Collapse",
     props: {
-        startOppened: {
+        oppenedByDefault: {
             type: Boolean,
             default: false
         },
@@ -14,35 +14,29 @@ export default {
     },
     data() {
         return {
-            openByDefault: !this.startOppened
+            isOpen: false
         }
     },
-    computed: {
+    methods: {
         toggleCollapse() {
             const content = this.$refs.content;
-
-            this.openByDefault = !this.openByDefault;
+            this.isOpen   = !this.isOpen;
 
             gsap.to(content, {
                 duration: 0.4,
-                height: this.openByDefault ? "auto" : 0,
-                opacity: this.openByDefault ? 1 : 0,
+                height: this.isOpen ? "auto" : 0,
+                opacity: this.isOpen ? 1 : 0,
                 ease: "power2.inOut"
             });
         }
+    },
+    mounted() {
+        this.isOpen   = this.oppenedByDefault;
+        const content = this.$refs.content;
+
+        gsap.set(content, {
+            height: this.isOpen ? "auto" : 0,
+            opacity: this.isOpen ? 1 : 0
+        });
     }
-    // methods: {
-    //     toggle() {
-    //         const content = this.$refs.content;
-
-    //         this.openByDefault = !this.openByDefault;
-
-    //         gsap.to(content, {
-    //             duration: 0.4,
-    //             height: this.openByDefault ? "auto" : 0,
-    //             opacity: this.openByDefault ? 1 : 0,
-    //             ease: "power2.inOut"
-    //         });
-    //     }
-    // }
 }
