@@ -31,16 +31,15 @@ export default {
             default: false
         }
     },
-
     methods: {
         async getPatients() {
             return await useApi("patients/dashboard", {method: "POST"});
         },
-          
+
         selectAllCheckboxes() {
             console.log('entrou');
         },
-          
+
         async filterPatients() {
             this.isFilteringPatients = true;
             await useApi("patients/dashboard", {method: "POST", body: this.filterBy})
@@ -52,23 +51,23 @@ export default {
                     this.isFilteringPatients = false
                 })
         },
-          
+
         openEditPatientModal(patientId) {
             this.patientId = patientId;
             this.editPatientModal = true;
         },
-        
+
         async destroy(endpoint) {
             const response = await useApi(endpoint);
             const { message, status } = response.data.value;
             this.patientId = null;
-    
+
             if(status == 200) {
                 this.warningModal = false;
                 showToast({message, status: 'success'});
             }
         },
-          
+
         openWarningModal(patientId){
             this.patientId = patientId;
             this.warningModal = true;
@@ -92,7 +91,8 @@ export default {
     mounted() {
         try {
             this.getPatients().then((data) => {
-                this.patients = data.data?.value?.pacientes || [];
+                const value = data.data.value
+                this.patients = value?.data || [];
             });
         } catch (error) {
             console.log(error.message);

@@ -8,12 +8,10 @@ const errors    = ref <string | null> (null);
 const isLoading = ref <boolean> (false);
 
 async function fetchUser() {
-    if(authToken.value) {
-        await useApi("user").then((response: any) => {
-            user.value = response.data?.value.user
-            document.cookie = `User=${JSON.stringify(user.value)}`
-        });
-    }
+    await useApi("user").then((response: any) => {
+        user.value = response.data?.data
+        document.cookie = `User=${JSON.stringify(user.value)}`
+    });
 }
 
 async function login(form: object) {
@@ -30,13 +28,11 @@ async function login(form: object) {
             }
 
             const data: any = response?.data.value
-            
-            authToken.value = data.data.token
 
+            authToken.value = data.data.token
             document.cookie = "JWT-TOKEN=" + authToken.value
 
             await fetchUser()
-
         }).finally(() => {
             isLoading.value = false
         })
